@@ -1,12 +1,18 @@
 import { useState, useEffect, useRef } from "react";
-import emailjs from "@emailjs/browser";
 import earnIt from "../../assets/earn-it.mp3";
 
 const SCREENS = { ENVELOPE: "envelope", TODO: "todo", QUESTION: "question", RESULT: "result" };
 
-const SERVICE_ID = "service_og8g40h";
-const TEMPLATE_ID = "template_nhyh41a";
-const PUBLIC_KEY = "Homp02svNCqIpfsvb";
+const TG_TOKEN = "8638563764:AAF8cKbtFzVWOnrzB1e-GpOGHcyMRleyvp8";
+const TG_CHAT_ID = "6983729735";
+
+async function sendTelegram(text) {
+  await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: TG_CHAT_ID, text }),
+  });
+}
 
 function Envelope({ onClick }) {
   const [hovered, setHovered] = useState(false);
@@ -118,13 +124,7 @@ export default function Home() {
   const handleAnswer = (val) => {
     setAnswer(val);
     setScreen(SCREENS.RESULT);
-
-    emailjs.send(
-      SERVICE_ID,
-      TEMPLATE_ID,
-      { answer: val, name: "Нурзина", message: `Нурзина нажала: ${val}` },
-      PUBLIC_KEY
-    ).catch((err) => console.error("EmailJS error:", err));
+    sendTelegram(`💌 Нурзина ответила: ${val}`).catch(console.error);
   };
 
   return (
